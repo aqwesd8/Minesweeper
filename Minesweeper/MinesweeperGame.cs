@@ -8,7 +8,8 @@ public class MinesweeperGame : Game
 {
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
-
+    private GameState _gameState;
+    
     public MinesweeperGame()
     {
         _graphics = new GraphicsDeviceManager(this);

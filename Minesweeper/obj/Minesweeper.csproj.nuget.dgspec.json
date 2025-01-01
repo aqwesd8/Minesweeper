@@ -45,9 +45,17 @@
         "net8.0-windows7.0": {
           "targetAlias": "net8.0-windows",
           "dependencies": {
+            "Gum.MonoGame": {
+              "target": "Package",
+              "version": "[2024.12.29.1, )"
+            },
             "MonoGame.Content.Builder.Task": {
               "target": "Package",
               "version": "[3.8.2.1105, )"
+            },
+            "MonoGame.Extended": {
+              "target": "Package",
+              "version": "[4.0.3, )"
             },
             "MonoGame.Framework.WindowsDX": {
               "target": "Package",
