@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGameGum.GueDeriving;
@@ -13,6 +14,7 @@ public class MinesweeperGame : Game
 
     private ContainerRuntime Root;
     private Tile button;
+    private Matrix scale;
     
     public MinesweeperGame()
     {
@@ -42,13 +44,16 @@ public class MinesweeperGame : Game
         button.Width = 100;
         button.Height = 50;
         button.Text = "Hello MonoGame!";
-        //int clickCount = 0;
-        // button.Click += (_, _) =>
-        // {
-        //     clickCount++;
-        //     button.Text = $"Clicked {clickCount} times";
-        // };
+
+        Window.AllowUserResizing = true;
+        Window.ClientSizeChanged += OnSizeChange;
+        scale = Matrix.CreateScale(1,1,1);
+
         base.Initialize();
+    }
+
+    private void OnSizeChange(object? sender = null, EventArgs? args = null){
+        Console.WriteLine("change");
     }
 
     protected override void LoadContent()
