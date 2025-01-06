@@ -3,6 +3,7 @@ using Gum.Wireframe;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Input;
+using MonoGame.Extended.Screens;
 using MonoGameGum.GueDeriving;
 using RenderingLibrary;
 using RenderingLibrary.Graphics;
@@ -13,11 +14,15 @@ public class MinesweeperGame : Game
 {
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
+    public SpriteBatch SpriteBatch {get => _spriteBatch;}
     private GameState _gameState;
     private Tile button;
     private Matrix scale;
+    private ScreenManager _screenManager;
     private readonly float virtualWidth;
     private readonly float virtualHeight;
+
+    public Board Board {get; private set;}
     
     public MinesweeperGame()
     {
@@ -26,6 +31,7 @@ public class MinesweeperGame : Game
         IsMouseVisible = true;
         virtualWidth = _graphics.PreferredBackBufferWidth;
         virtualHeight = _graphics.PreferredBackBufferHeight;
+        Board = new Board(this);
     }
 
     protected override void Initialize()
@@ -34,15 +40,14 @@ public class MinesweeperGame : Game
         var gumProject = MonoGameGum.GumService.Default.Initialize(
             this.GraphicsDevice);
 
-        button = new Tile();
-        button.X = 50;
-        button.Y = 50;
-        button.Width = 100;
-        button.Height = 50;
+        button = new Tile(100,100,50,50,false,Vector2.One, this);
 
         Window.AllowUserResizing = true;
         Window.ClientSizeChanged += OnSizeChange;
         scale = Matrix.CreateScale(1,1,1);
+        _screenManager = new ScreenManager();
+        Components.Add(_screenManager);
+        Components.Add(Board);
         base.Initialize();
     }
 
@@ -75,7 +80,7 @@ public class MinesweeperGame : Game
         //MonoGameGum.GumService.Default.Update(this, gameTime, Root);
         MouseExtended.Update();
         ScaledMouse.Update(scale);
-        button.Update(gameTime);
+        //button.Update(gameTime);
         base.Update(gameTime);
     }
 
@@ -86,9 +91,10 @@ public class MinesweeperGame : Game
         // TODO: Add your drawing code here
         //MonoGameGum.GumService.Default.Draw();
         _spriteBatch.Begin(transformMatrix : scale);
-        button.Draw(gameTime, _spriteBatch);
-        _spriteBatch.End();
+        //button.Draw(gameTime, _spriteBatch);
         base.Draw(gameTime);
+        _spriteBatch.End();
+        
     }
 
 

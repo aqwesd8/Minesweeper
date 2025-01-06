@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Minesweeper;
 
-public class InputHandler : IUpdateable
+public class InputHandler //: IUpdateable
 {
 
     /// <summary>

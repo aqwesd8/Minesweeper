@@ -1,80 +1,55 @@
-using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
 
 namespace Minesweeper;
 
-public class Tile : IUpdateable {
+public class Tile : Button {
     public bool ValueVisible {get; private set;}
     public bool HasMine {get; private set;}
-    public bool MinesInProximity {get; private set;}
+    public int MinesInProximity {get; private set;}
     public bool IsFlagged {get; private set;}
 
-    public float X;
-    public float Y;
-    public float Width;
-    public float Height;
+    public const int SIDE_LENGTH = 30;
+
+    public Vector2 Index {get; private set;}
     
+    public Board Board {get; private set;}
 
-    private static readonly Color STANDING = Color.BlanchedAlmond;
-    private static readonly Color HIGHLIGHTED = Color.Beige;
-    private Color color = STANDING;
-
-    public Tile(float x, float y, float width, float height){
-        X = x;
-        Y = y;
-        Width = width;
-        Height = height;
+    public Tile(float x, float y, float width, float height, bool hasMine, Vector2 index, MinesweeperGame game) :base(x,y,width,height,game) 
+    {
+        Board = game.Board; 
+        HasMine = hasMine;
+        Index = index;
     }
-    public Tile() : this(0,0,0,0){}
+    public Tile(MinesweeperGame game) : this(0,0,SIDE_LENGTH,SIDE_LENGTH,false,Vector2.One,game){}
 
-    
-
-    protected virtual void OnClick()
-    {
-        //TODO - implement
-        color = HIGHLIGHTED;
-        Console.WriteLine("TEST");
-    }
-    protected virtual void OnPush()
-    {
-        color = STANDING;
-    }
-    protected virtual void OnRollOn()
-    {
-        color = HIGHLIGHTED;
-    }  
-    protected virtual void OnRollOff()
-    {
-        color = STANDING;
+    public Tile(Vector2 index, bool hasMine, MinesweeperGame game) : this(game){
+        HasMine = hasMine;
+        Index = index;
+        X = Board.X + Index.X*SIDE_LENGTH;
+        Y = Board.Y + Index.Y*SIDE_LENGTH;
     }
 
-    public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+    public void SetMinesInProximity()
     {
-        spriteBatch.FillRectangle(X,Y,Width,Height,color);
+        int mineCount = 0;
+        foreach (Vector2 index in getNeighboringIndicies()){
+            Tile? neighbor = Board.GetTileAt(index);
+            mineCount += (neighbor?.HasMine ?? false) ? 1 : 0;
+        }
+        MinesInProximity = mineCount;
+    }
+    private List<Vector2> getNeighboringIndicies()
+    {
+        var neighbors = new List<Vector2>();
+
+        for (int i = -1; i < 2; i++)
+            for (int j = -1; j < 2; j++)
+            {
+                if(i!=0 || j!=0) neighbors.Add(new Vector2(Index.X+i,Index.Y+j));
+            }
+
+        return neighbors;
     }
 
-    public void Update(GameTime gameTime)
-    {
-
-        ScaledMouseState ms = ScaledMouse.GetState();
-        float mouseX= ms.X;
-        float mouseY = ms.Y;
-        float prevX = ms.Previous_X;
-        float prevY = ms.Previous_Y;
-        
-
-        bool mouseOnTile = mouseX >= X && mouseX <= X+Width && mouseY >= X && mouseY <= X+Height;
-        bool mouseWasOnTile = prevX >= X && prevX <= X+Width && prevY >= X && prevY <= X+Height;
-
-        if(!mouseWasOnTile && mouseOnTile) OnRollOn();
-        if(mouseWasOnTile && !mouseOnTile) OnRollOff();
-
-    }
-
-    public void Draw(GameTime gameTime)
-    {
-        throw new NotImplementedException();
-    }
 }

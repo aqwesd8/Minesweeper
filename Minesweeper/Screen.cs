@@ -2,7 +2,7 @@ using Microsoft.Xna.Framework;
 
 namespace Minesweeper;
 
-public class Screen : IUpdateable
+public class Screen //: IUpdateable
 {
 
 

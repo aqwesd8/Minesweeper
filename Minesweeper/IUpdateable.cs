@@ -1,8 +1,8 @@
-using Microsoft.Xna.Framework;
+// using Microsoft.Xna.Framework;
 
-namespace Minesweeper;
+// namespace Minesweeper;
 
-public interface IUpdateable {
-    public void Draw(GameTime gameTime);
-    public void Update(GameTime gameTime);
-}
+// public interface IUpdateable {
+//     public void Draw(GameTime gameTime);
+//     public void Update(GameTime gameTime);
+// }
