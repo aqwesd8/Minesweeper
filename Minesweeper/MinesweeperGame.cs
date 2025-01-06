@@ -1,8 +1,11 @@
 ﻿using System;
+using Gum.Wireframe;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended.Input;
 using MonoGameGum.GueDeriving;
+using RenderingLibrary;
+using RenderingLibrary.Graphics;
 
 namespace Minesweeper;
 
@@ -11,16 +14,18 @@ public class MinesweeperGame : Game
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
     private GameState _gameState;
-
-    private ContainerRuntime Root;
     private Tile button;
     private Matrix scale;
+    private readonly float virtualWidth;
+    private readonly float virtualHeight;
     
     public MinesweeperGame()
     {
         _graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
+        virtualWidth = _graphics.PreferredBackBufferWidth;
+        virtualHeight = _graphics.PreferredBackBufferHeight;
     }
 
     protected override void Initialize()
@@ -29,31 +34,31 @@ public class MinesweeperGame : Game
         var gumProject = MonoGameGum.GumService.Default.Initialize(
             this.GraphicsDevice);
 
-        Root = new ContainerRuntime();
-        Root.Width = 0;
-        Root.Height = 0;
-        Root.WidthUnits = Gum.DataTypes.DimensionUnitType.RelativeToContainer;
-        Root.HeightUnits = Gum.DataTypes.DimensionUnitType.RelativeToContainer;
-        Root.AddToManagers();
-
-
         button = new Tile();
-        Root.Children.Add(button.Visual);
         button.X = 50;
         button.Y = 50;
         button.Width = 100;
         button.Height = 50;
-        button.Text = "Hello MonoGame!";
 
         Window.AllowUserResizing = true;
         Window.ClientSizeChanged += OnSizeChange;
         scale = Matrix.CreateScale(1,1,1);
-
         base.Initialize();
     }
 
     private void OnSizeChange(object? sender = null, EventArgs? args = null){
-        Console.WriteLine("change");
+        _graphics.PreferredBackBufferWidth = GraphicsDevice.Viewport.Width;
+        _graphics.PreferredBackBufferHeight = GraphicsDevice.Viewport.Height;
+        _graphics.ApplyChanges();
+
+        float scaleX = _graphics.PreferredBackBufferWidth/virtualWidth;
+        float scaleY = _graphics.PreferredBackBufferHeight/virtualHeight;
+
+        //SystemManagers.Default.Renderer.Camera.Zoom = scaleX;
+        // GraphicalUiElement.CanvasWidth = virtualWidth;
+        // GraphicalUiElement.CanvasHeight = virtualHeight;
+        // Root.UpdateLayout();
+        scale = Matrix.CreateScale(scaleX, scaleY,1);
     }
 
     protected override void LoadContent()
@@ -67,7 +72,10 @@ public class MinesweeperGame : Game
     {
 
         // TODO: Add your update logic here
-        MonoGameGum.GumService.Default.Update(this, gameTime, Root);
+        //MonoGameGum.GumService.Default.Update(this, gameTime, Root);
+        MouseExtended.Update();
+        ScaledMouse.Update(scale);
+        button.Update(gameTime);
         base.Update(gameTime);
     }
 
@@ -76,10 +84,13 @@ public class MinesweeperGame : Game
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
         // TODO: Add your drawing code here
-        MonoGameGum.GumService.Default.Draw();
-        _spriteBatch.Begin();
+        //MonoGameGum.GumService.Default.Draw();
+        _spriteBatch.Begin(transformMatrix : scale);
         button.Draw(gameTime, _spriteBatch);
         _spriteBatch.End();
         base.Draw(gameTime);
     }
+
+
+
 }
