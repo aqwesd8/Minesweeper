@@ -22,6 +22,8 @@ public class MinesweeperGame : Game
     private readonly float virtualWidth;
     private readonly float virtualHeight;
 
+    public GraphicsDeviceManager  Graphics => _graphics;
+
     public Board Board {get; private set;}
     
     public MinesweeperGame()

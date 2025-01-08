@@ -9,6 +9,9 @@ public class Board : DrawableGameComponent {
     
     public float X {get; private set;}
     public float Y {get; private set;}
+
+    public float Width => _size.X*Tile.SIDE_LENGTH;
+    public float Height => _size.Y*Tile.SIDE_LENGTH;
     
     /// <summary>
     /// A list of minesweeper tiles.
@@ -38,13 +41,12 @@ public class Board : DrawableGameComponent {
         _size = size ?? DEFAULT_SIZE;
         _mineCount = mineCount;
         _flagCount = flagCount;
-        X = 50; //change
-        Y = 50; //change
+        X = game.Graphics.PreferredBackBufferWidth/2-Width/2; //change
+        Y = game.Graphics.PreferredBackBufferHeight/2-Height/2; //change
     }
 
     public override void Draw(GameTime gameTime)
     {
-        //throw new System.NotImplementedException();
         foreach (Tile tile in _tiles.Values){
             tile.Draw(gameTime);
         }
@@ -53,7 +55,6 @@ public class Board : DrawableGameComponent {
 
     public override void Update(GameTime gameTime)
     {
-        //throw new System.NotImplementedException();
         foreach (Tile tile in _tiles.Values){
             tile.Update(gameTime);
         }
