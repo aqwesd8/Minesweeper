@@ -1,12 +1,8 @@
 ﻿using System;
-using Gum.Wireframe;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Input;
 using MonoGame.Extended.Screens;
-using MonoGameGum.GueDeriving;
-using RenderingLibrary;
-using RenderingLibrary.Graphics;
 
 namespace Minesweeper;
 
